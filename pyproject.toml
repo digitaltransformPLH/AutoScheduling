@@ -1,0 +1,18 @@
+# Workspace config for the auto-scheduling platform (Python part).
+# Packages: auto_scheduling/ (engine + ETL, package `auto_scheduling`), services/api (FastAPI, package `sched_api`).
+# The ASP.NET app in src/ is separate and owns the dbo input tables; this platform owns schema `sched`.
+
+[tool.ruff]
+line-length = 140
+target-version = "py312"
+extend-exclude = ["services/web", "src", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["B008", "E501", "SIM108", "UP038"]
+
+[tool.pytest.ini_options]
+testpaths = ["auto_scheduling/tests", "services/api/tests"]
+addopts = "-m 'not integration' -p no:cacheprovider"
+markers = ["integration: needs the real SQL Server (SCHED_SQL_CONN)"]
+filterwarnings = ["ignore::UserWarning"]

@@ -1,0 +1,8 @@
+__pycache__/
+.pytest_cache/
+reports/
+*.parquet
+# personal data: per-store availability workbooks and real employee tables
+data/*.xlsx
+data/real/dim_employee*.csv
+data/real/busy*.csv

@@ -29,3 +29,17 @@ Thumbs.db
 Desktop.ini
 *.swp
 *~
+
+# --- auto-scheduling platform (Python / React) ---
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.env
+*.egg-info/
+node_modules/
+services/web/dist/
+*.tsbuildinfo
+services/web/openapi.json
+auto_scheduling/data/out/
+auto_scheduling/reports/
