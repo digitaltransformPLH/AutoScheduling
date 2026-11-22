@@ -1,0 +1,37 @@
+:root {
+  --font-sans: Manrope, 'Segoe UI', Arial, sans-serif;
+  --bg: #f4faf6;
+  --surface: #ffffff;
+  --soft: #eef7f1;
+  --line: #d7e7dd;
+  --text: #173b2a;
+  --muted: #5d7669;
+  --green: #006b35;
+  --green-soft: #e7f5ec;
+  --red: #b42318;
+  --red-soft: #fff0ee;
+  --radius: 12px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text);
+  background: linear-gradient(180deg, #edf8f1 0%, #f8fcf9 220px, var(--bg) 100%);
+  min-height: 100vh;
+}
+
+a {
+  color: var(--green);
+}
+
+button {
+  font: inherit;
+}

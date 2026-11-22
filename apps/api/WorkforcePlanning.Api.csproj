@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+    <ClientDir>$(MSBuildThisFileDirectory)..\web</ClientDir>
+    <PlanningHtml>$(MSBuildThisFileDirectory)..\..\PLH Weekly Workforce Planning.html</PlanningHtml>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="10.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.OpenApi" Version="2.3.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\packages\WorkforcePlanning.Application\WorkforcePlanning.Application.csproj" />
+    <ProjectReference Include="..\..\packages\WorkforcePlanning.Infrastructure\WorkforcePlanning.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <Target Name="BuildClientApp" BeforeTargets="Publish" Condition="Exists('$(ClientDir)\package.json')">
+    <Message Importance="high" Text="Building React client (npm run build)..." />
+    <Exec WorkingDirectory="$(ClientDir)" Command="npm ci" />
+    <Exec WorkingDirectory="$(ClientDir)" Command="npm run build" />
+  </Target>
+
+  <Target Name="CopyPlanningHtml" AfterTargets="BuildClientApp" BeforeTargets="PrepareForPublish" Condition="Exists('$(PlanningHtml)')">
+    <MakeDir Directories="$(MSBuildThisFileDirectory)wwwroot\planning" />
+    <Copy SourceFiles="$(PlanningHtml)" DestinationFiles="$(MSBuildThisFileDirectory)wwwroot\planning\index.html" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="CopyPlanningHtmlOnBuild" AfterTargets="Build" Condition="Exists('$(PlanningHtml)')">
+    <MakeDir Directories="$(MSBuildThisFileDirectory)wwwroot\planning" />
+    <Copy SourceFiles="$(PlanningHtml)" DestinationFiles="$(MSBuildThisFileDirectory)wwwroot\planning\index.html" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

@@ -1,0 +1,67 @@
+Excel: c:\Users\tienlta\OneDrive - WIN\Project\weekly_workforce_planning\Danh sách CH PLH - 2026 (6).xlsx
+dim_store rows: 408 (active 280, closed 128)
+dim_store_detail rows: 280
+Operation Hour parsed: 268/280
+Unparsed Operation Hour: 7
+Closed stores missing CloseDate: 66
+
+CloseDate warnings:
+CloseDate missing for closed store 3232 (VM+ HCM 185B Nguyễn Thị Định)
+CloseDate missing for closed store 3225 (VM+ HCM 7-9 Nguyễn Hiền)
+CloseDate missing for closed store 3827 (VM+ HCM 0.02, CC Phúc Thịnh)
+CloseDate missing for closed store 3186 (VM+ HCM 876 Huỳnh Tấn Phát)
+CloseDate missing for closed store 3322 (VM+ LAN 218/2 Ấp Xóm Cống)
+CloseDate missing for closed store 4003 (WM+VLG 68 đường 2 tháng 9)
+CloseDate missing for closed store 3137 (VM+ HCM 323-325 Bùi Hữu Nghĩa)
+CloseDate missing for closed store 3693 (VM+ HCM B4 Bạch Đằng)
+CloseDate missing for closed store 4017 (VM+ HCM Lô NTR-01.02, CC Newton)
+CloseDate missing for closed store 3143 (VM+ HCM 208 Bùi Văn Ba)
+CloseDate missing for closed store 2008 (HNI-CH 2 Đặng Thai Mai P.QA Q.Tây)
+CloseDate missing for closed store 3395 (HNI PLVM+ inmart Lê Đức Thọ)
+CloseDate missing for closed store 2112 (QTI - 117 Hùng Vương)
+CloseDate missing for closed store 3768 (VM+ HCM Tầng 1+2B Gateway Thảo Điền)
+CloseDate missing for closed store 2022 (HCM-CH 130 CMT8 P.10 Q.3)
+CloseDate missing for closed store 3480 (HCM PLVM+ 82 Tô Vĩnh Diện)
+CloseDate missing for closed store 3696 (VM+ HCM Grand Riverside)
+CloseDate missing for closed store 2075 (HCM-CH TSN Gate 26-27 Quốc Tế)
+CloseDate missing for closed store 2088 (HCM VM Bầu Cát)
+CloseDate missing for closed store 2011 (HNI-CH 54A Nguyen Chi Thanh)
+CloseDate missing for closed store 2085 (HNI - Vinmart Vũ Trọng Phụng (CH lớn có chỗ ngồi))
+CloseDate missing for closed store 3231 (VM HCM Bình Trưng)
+CloseDate missing for closed store 4321 (HNI WIN S6B - 05A Vinhomes Symphony)
+CloseDate missing for closed store 4297 (HNI WM+ Green Star Phạm Văn Đồng)
+CloseDate missing for closed store 4269 (HNI VM+ 2 Vương Thừa Vũ)
+CloseDate missing for closed store 4291 (HNI WM+ B2 Pandora Triều Khúc)
+CloseDate missing for closed store 3089 (HNI-PLVM+ Sudico Mỹ Đình)
+CloseDate missing for closed store 3895 (VTU VM+ 09 Nguyễn Hữu Cảnh)
+CloseDate missing for closed store 3479 (HCM PLVM+ 4/1D Ấp Nam Thới)
+CloseDate missing for closed store 3114 (HNI-PLVM+ UDIC Riverside 122 Vĩnh)
+CloseDate missing for closed store 3187 (HCM-PLVM+ 36/27 Kinh Dương Vương -)
+CloseDate missing for closed store 3459 (HCM PLVM+ 09 Phạm Vấn)
+CloseDate missing for closed store 3160 (HCM-PLVM+ Số 24 Đoàn Kết - Khu Phố 2 -)
+CloseDate missing for closed store 3763 (HCM PLVM+ A1.01.22 Tầng 1-2 Tháp A1 S)
+CloseDate missing for closed store 3458 (HCM PLVM+ Tầng 1 Lô A, CC XI)
+CloseDate missing for closed store 3471 (HCM PLVM+ Trệt CC 36 Trịnh Đình Thảo)
+CloseDate missing for closed store 3733 (HCM PLVM+ T1.04 Tòa nhà La Astoria)
+CloseDate missing for closed store 4016 (HCM VM+ Golden Mansion)
+CloseDate missing for closed store 4268 (HCM WM+ HCM Thuận Việt)
+CloseDate missing for closed store 3759 (VM+ HCM CC Morning Star)
+CloseDate missing for closed store 2125 (QNM - 72 Nguyễn Thị Minh Khai)
+CloseDate missing for closed store 2029 (HCM-CH 296 Hoa Binh P.HT Q.TP)
+CloseDate missing for closed store 2065 (HCM-CH 382 Tran Hung Dao P.11 Q5)
+CloseDate missing for closed store 2031 (HCM-CH 1012 Kha Van Can P.LC Q.TĐ)
+CloseDate missing for closed store 2043 (HCM-CH 31 Ngô Đức Kế P.BN Q1)
+CloseDate missing for closed store 2044 (HCM-CH 42 Ngô Đức Kế P.BN Q1)
+CloseDate missing for closed store 2056 (HCM-CH Sky Garden 34 PVN P.TP Q7)
+CloseDate missing for closed store 2129 (DNG - Sân bay Đà Nẵng)
+CloseDate missing for closed store 3405 (HNI - Vinmart Trung Hòa (CH lớn có chỗ ngồi))
+CloseDate missing for closed store 3135 (HCM-PLVM+ 419 Ba Đình -P.9-Q8)
+
+Unparsed Operation Hour samples:
+2072: Mon - Sun 24/7
+2077: Mon - Sun 24/7
+2257:  
+2265:  
+2263:  
+2264:  
+2215: 24/7

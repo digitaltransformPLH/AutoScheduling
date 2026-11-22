@@ -1,25 +1,41 @@
 # Workforce Planning — Publish Daily Metrics API
 
-ASP.NET Core API + SPA for workforce planning. Auth is **cookie session** with **email/password** and full **RBAC** (Role + Permission). Store assignment is data scope only.
+ASP.NET Core API + **React admin SPA** (login, users, roles, stores, AM→OM). Auth is **cookie session** with **email/password** and full **RBAC**. Weekly planning vẫn là HTML legacy tại `/planning/` (ngoài scope refactor).
+
+## Repository layout
+
+```text
+apps/
+  api/          ASP.NET Core host + wwwroot
+  web/          Vite + React (admin SPA)
+packages/
+  WorkforcePlanning.Domain/
+  WorkforcePlanning.Application/
+  WorkforcePlanning.Infrastructure/
+database/       SQL scripts & migrations helpers
+```
 
 ## Architecture
 
 ```
-Browser (wwwroot/index.html)
+Browser (React at /, build from apps/web/)
   → POST /api/v1/auth/login  (cookie)
   → GET  /api/v1/me
-  → POST /api/v1/publish | Users/Roles admin APIs
+  → Admin APIs: users, roles, stores, am-om-assignments
   → SQL Server
+
+/planning/ → legacy HTML (optional)
 ```
 
 ## Projects
 
-| Project | Role |
+| Path | Role |
 |---|---|
-| `WorkforcePlanning.Api` | Controllers, cookie auth, static HTML |
-| `WorkforcePlanning.Application` | DTOs, FluentValidation |
-| `WorkforcePlanning.Domain` | Entities / permission codes |
-| `WorkforcePlanning.Infrastructure` | EF Core, services |
+| `apps/web/` | Vite + React + TypeScript (`features/`, `shared/`) → `apps/api/wwwroot` |
+| `apps/api/` | Controllers, cookie auth, static files |
+| `packages/WorkforcePlanning.Application` | DTOs, FluentValidation |
+| `packages/WorkforcePlanning.Domain` | Entities / permission codes |
+| `packages/WorkforcePlanning.Infrastructure` | EF Core, services |
 
 ## Auth & permissions
 
@@ -61,18 +77,57 @@ System roles: Administrator, Manager, Staff, Viewer.
 | `POST` | `/api/v1/roles/{id}/clone` | `Action.Role.Manage` |
 | `GET` | `/api/v1/permissions` | Role/User manage |
 | `GET` | `/api/v1/stores` | Store.View or User.Manage |
+| `GET` | `/api/v1/sched/*` | `Action.Planning.Overview.View` or `Analysis.View` + store scope (đọc `sched.vw_*`) |
+| `POST` | `/api/v1/sched/runs` | `Action.Publish.Schedule` + store scope (engine Python) |
 
 ## Local development
 
-1. Copy `src/WorkforcePlanning.Api/appsettings.Development.json.example` → `appsettings.Development.json` and set SQL + Auth passwords (file is gitignored).
-2. Run:
+1. Copy `apps/api/appsettings.Development.json.example` → `apps/api/appsettings.Development.json` and set SQL + Auth passwords (file is gitignored).
+2. **React admin UI** (login, users, roles) + **legacy planning** at `/planning/`:
 
-```bash
-dotnet run --project src/WorkforcePlanning.Api
+**Option A — integrated (giống production)**
+
+```powershell
+cd apps/web
+npm install
+npm run build
+cd ../..
+dotnet run --project apps/api
 ```
 
-3. Open the site URL (not `file://`). Login with seeded admin.
-4. Optional schema script: [`database/005_CookieAuthRbac.sql`](database/005_CookieAuthRbac.sql) (prefer `dotnet ef database update` / app startup migrate).
+Mở `http://localhost:5224` (React). Planning: `http://localhost:5224/planning/`.
+
+**Option B — hot reload React**
+
+```powershell
+# Terminal 1
+dotnet run --project apps/api
+
+# Terminal 2
+cd apps/web
+npm install
+npm run dev
+```
+
+Mở Vite (thường `http://localhost:5173`); API proxy `/api` → API port.
+
+3. Login với admin seed. Quản trị: `/users`, `/roles`, `/stores`, `/am-om`. **Auto scheduling UI** (trong admin SPA): `/scheduling`, `/scheduling/roster`, `/scheduling/runs` — API đọc lịch tại `/api/v1/sched/*` (schema `sched` trên SQL Server). Nút **Tạo lịch** cần Python + package `auto_scheduling` (`Scheduling:PythonExecutable` trong `appsettings`). Weekly planning (legacy): `/planning/`.
+
+### Cấu trúc React (`apps/web/src`)
+
+- `app/` — router, QueryClient  
+- `features/auth|users|roles|stores|am-om|home` — màn hình + API  
+- `shared/api`, `shared/layouts` — HTTP client, types, AdminLayout
+
+4. EF migrations (from repo root):
+
+```powershell
+dotnet ef database update --project packages/WorkforcePlanning.Infrastructure --startup-project apps/api
+```
+
+5. Optional schema script: [`database/005_CookieAuthRbac.sql`](database/005_CookieAuthRbac.sql) (prefer `dotnet ef database update` / app startup migrate).
+
+`scripts/local-publish.ps1` chạy `npm run build` trước `dotnet publish`.
 
 ## IIS on-prem deploy
 
@@ -80,7 +135,7 @@ dotnet run --project src/WorkforcePlanning.Api
 2. Publish:
 
 ```bash
-dotnet publish src/WorkforcePlanning.Api -c Release -o C:\inetpub\WorkforcePlanning
+dotnet publish apps/api -c Release -o C:\inetpub\WorkforcePlanning
 ```
 
 3. IIS:

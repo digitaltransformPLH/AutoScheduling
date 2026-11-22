@@ -197,7 +197,7 @@ def main() -> None:
     lines.append("")
     lines.append("PRINT 'Store org seed completed.';")
 
-    OUT_SQL.write_text("\n".join(lines), encoding="utf-8")
+    OUT_SQL.write_text("\n".join(lines), encoding="utf-8-sig")
     print(f"Wrote {OUT_SQL} ({len(persons)} persons, {len(store_values)} stores)")
 
 

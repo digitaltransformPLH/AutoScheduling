@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
     [string]$Configuration = 'Release',
-    [string]$Project = 'src/WorkforcePlanning.Api/WorkforcePlanning.Api.csproj',
+    [string]$Project = 'apps/api/WorkforcePlanning.Api.csproj',
     [string]$PublishDir = '.\artifacts\publish',
     [string]$ShareDir = 'C:\Users\tienlta\OneDrive - WIN\Project\weekly_workforce_planning\Deploy',
     [string]$ZipName = 'workforce_publish.zip'
@@ -42,6 +42,24 @@ if (Test-Path -LiteralPath $publishFull) {
     Remove-Item -LiteralPath $publishFull -Recurse -Force
 }
 New-Item -ItemType Directory -Path $publishFull -Force | Out-Null
+
+$clientDir = Join-Path $RepoRoot 'apps/web'
+if (Test-Path -LiteralPath (Join-Path $clientDir 'package.json')) {
+    Write-Step "npm run build (client)"
+    Push-Location $clientDir
+    try {
+        if (Test-Path -LiteralPath (Join-Path $clientDir 'package-lock.json')) {
+            npm ci
+        } else {
+            npm install
+        }
+        npm run build
+        if ($LASTEXITCODE -ne 0) { throw "npm run build failed" }
+    }
+    finally {
+        Pop-Location
+    }
+}
 
 Write-Step "dotnet publish ($Configuration)"
 & dotnet publish $projectPath -c $Configuration -o $publishFull --no-self-contained
