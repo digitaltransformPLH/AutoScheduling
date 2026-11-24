@@ -136,12 +136,20 @@ try
 
     app.UseSerilogRequestLogging();
 
-    var pathBase = builder.Configuration["PathBase"]
-        ?? Environment.GetEnvironmentVariable("ASPNETCORE_PATHBASE");
-    if (!string.IsNullOrWhiteSpace(pathBase))
-        app.UsePathBase(pathBase.StartsWith('/') ? pathBase : "/" + pathBase);
+    var pathBase = SpaIndex.ConfiguredPathBase(builder.Configuration);
+    if (pathBase is not null)
+        app.UsePathBase(pathBase);
 
-    app.UseDefaultFiles();
+    app.Use(async (ctx, next) =>
+    {
+        if (string.Equals(ctx.Request.Path.Value, "/index.html", StringComparison.OrdinalIgnoreCase))
+        {
+            await SpaIndex.SendAsync(ctx, webRoot);
+            return;
+        }
+
+        await next();
+    });
     app.UseStaticFiles();
 
     app.UseCors("SameSiteOrDev");
@@ -153,8 +161,10 @@ try
     var planningIndex = Path.Combine(webRoot, "planning", "index.html");
     if (File.Exists(planningIndex))
     {
-        app.MapGet("/planning", () => Results.Redirect("/planning/index.html")).AllowAnonymous();
-        app.MapGet("/planning/", () => Results.Redirect("/planning/index.html")).AllowAnonymous();
+        app.MapGet("/planning", (HttpContext ctx) =>
+            Results.Redirect($"{ctx.Request.PathBase}/planning/index.html")).AllowAnonymous();
+        app.MapGet("/planning/", (HttpContext ctx) =>
+            Results.Redirect($"{ctx.Request.PathBase}/planning/index.html")).AllowAnonymous();
     }
 
     app.MapFallback(async ctx =>
@@ -167,15 +177,7 @@ try
             return;
         }
 
-        var spaIndex = Path.Combine(webRoot, "index.html");
-        if (!File.Exists(spaIndex))
-        {
-            ctx.Response.StatusCode = StatusCodes.Status404NotFound;
-            return;
-        }
-
-        ctx.Response.ContentType = "text/html; charset=utf-8";
-        await ctx.Response.SendFileAsync(spaIndex);
+        await SpaIndex.SendAsync(ctx, webRoot);
     }).AllowAnonymous();
 
     Log.Information("WebRoot: {WebRoot}", webRoot);
@@ -196,6 +198,52 @@ catch (Exception ex)
 finally
 {
     await Log.CloseAndFlushAsync();
+}
+
+static class SpaIndex
+{
+    public static string? ConfiguredPathBase(IConfiguration config)
+    {
+        var raw = config["PathBase"]
+            ?? Environment.GetEnvironmentVariable("ASPNETCORE_PATHBASE")
+            ?? Environment.GetEnvironmentVariable("ASPNETCORE_APPL_PATH");
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+        var value = raw.Trim();
+        if (!value.StartsWith('/')) value = "/" + value;
+        value = value.TrimEnd('/');
+        return value.Length == 0 ? null : value;
+    }
+
+    public static async Task SendAsync(HttpContext ctx, string webRoot)
+    {
+        var spaIndex = Path.Combine(webRoot, "index.html");
+        if (!File.Exists(spaIndex))
+        {
+            ctx.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        var html = await File.ReadAllTextAsync(spaIndex);
+        var pathBase = ctx.Request.PathBase.HasValue
+            ? ctx.Request.PathBase.Value!.TrimEnd('/')
+            : "";
+        var href = string.IsNullOrEmpty(pathBase) ? "/" : pathBase + "/";
+        var jsPath = string.IsNullOrEmpty(pathBase) ? "/" : pathBase;
+        if (html.Contains("<base ", StringComparison.OrdinalIgnoreCase) == false)
+        {
+            var injection =
+                $"<base href=\"{System.Net.WebUtility.HtmlEncode(href)}\">" +
+                $"<script>window.__PL_PATH_BASE__={System.Text.Json.JsonSerializer.Serialize(jsPath)};</script>";
+            const string marker = "<head>";
+            var idx = html.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+            if (idx >= 0)
+                html = html.Insert(idx + marker.Length, injection);
+        }
+
+        ctx.Response.ContentType = "text/html; charset=utf-8";
+        ctx.Response.Headers.CacheControl = "no-cache";
+        await ctx.Response.WriteAsync(html);
+    }
 }
 
 public sealed class UnauthorizedAccessExceptionFilter : IExceptionFilter

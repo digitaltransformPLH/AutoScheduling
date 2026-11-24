@@ -1,8 +1,11 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
+  // Production HTML references ./assets/… so a virtual directory (for example
+  // /auto-scheduling) works. The API injects <base href> from the IIS path.
+  base: command === 'build' ? './' : '/',
   optimizeDeps: {
     include: ['antd', '@ant-design/icons', 'echarts', 'echarts-for-react', 'dayjs'],
   },
@@ -19,4 +22,4 @@ export default defineConfig({
     outDir: '../api/wwwroot',
     emptyOutDir: true,
   },
-})
+}))

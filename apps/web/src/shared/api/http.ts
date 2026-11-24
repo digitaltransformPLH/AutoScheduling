@@ -1,14 +1,16 @@
+import { getPathBase } from './pathBase'
+
 const envBase = import.meta.env.VITE_API_BASE as string | undefined
 
-/** API base URL (e.g. `/api/v1` or `/WorkforcePlanning/api/v1`). */
+/** API base URL (e.g. `/api/v1` or `/auto-scheduling/api/v1`). */
 export function getApiBase(): string {
   if (envBase) return envBase.replace(/\/$/, '')
   const meta = document.querySelector('meta[name="api-base"]')?.getAttribute('content')
   if (meta) return meta.replace(/\/$/, '')
-  const pb = (window as unknown as { __PL_PATH_BASE__?: string }).__PL_PATH_BASE__
-  if (pb) return `${pb.replace(/\/$/, '')}/api/v1`
+  const pb = getPathBase()
+  if (pb) return `${pb}/api/v1`
   const base = import.meta.env.BASE_URL?.replace(/\/$/, '') ?? ''
-  if (base) return `${base}/api/v1`
+  if (base && base !== '.') return `${base}/api/v1`
   return '/api/v1'
 }
 

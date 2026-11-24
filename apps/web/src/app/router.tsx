@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { getPathBase } from '../shared/api/pathBase'
 import { PermissionCodes } from '../shared/api/types'
 import { AdminLayout } from '../shared/layouts/AdminLayout'
 import { LoginPage } from '../features/auth/LoginPage'
@@ -18,10 +19,11 @@ import { RosterPage } from '../features/scheduling/pages/RosterPage'
 import { RunsPage } from '../features/scheduling/pages/RunsPage'
 
 const schedViewPerms = [PermissionCodes.PlanningOverviewView, PermissionCodes.PlanningAnalysisView]
+const basename = getPathBase() || undefined
 
 export function AppRouter() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
